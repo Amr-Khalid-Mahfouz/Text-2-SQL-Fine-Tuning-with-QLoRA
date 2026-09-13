@@ -15,11 +15,11 @@ Measured over 500 held-out test examples, using a custom SQLite-based execution-
 
 The more interesting finding is *where* that improvement comes from:
 
-![Accuracy by query complexity]("Graphs\Accuracy_by_query_complexity.png")
+![Accuracy by query complexity](Graphs/Accuracy_by_query_complexity.png)
 
 The base model scores **0%** on any query requiring `GROUP BY`, a `JOIN` combined with `GROUP BY`, or `ORDER BY`/`LIMIT` - it cannot reliably produce aggregation or ordering logic at all. Fine-tuning takes it from 0% to 58–76% across all three. This isn't just "the model got better at SQL" - it learned specific capabilities it had essentially none of beforehand.
 
-![Outcome breakdown]("Graphs\Outcome_breakdown.png")
+![Outcome breakdown](Graphs/Outcome_breakdown.png)
 
 The breakdown also shows *what kind* of mistake dropped: `pred_failed` (SQL that doesn't even execute) fell from 360/500 to 41/500. The base model's main failure mode was producing invalid SQL; the fine-tuned model's remaining errors (88/500) are mostly `wrong_result` - syntactically valid SQL that returns the wrong data. That's a meaningfully different (and more solvable) kind of error.
 
