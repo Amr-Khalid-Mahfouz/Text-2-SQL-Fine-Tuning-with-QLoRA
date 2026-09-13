@@ -51,9 +51,10 @@ Splitting these matters in practice: the eval notebook can be run standalone, in
 
 ## Known limitations
 
-- **`target_failed` sits at ~20% (101/500).** This means the sanitizer doesn't yet translate every Postgres construct present in the dataset - these cases are excluded from the accuracy calculation rather than counted against the model, but a more complete sanitizer would shrink this and provide a larger effective test set.
+- **`target_failed` sits at ~20% (101/500).** This means the sanitizer doesn't yet translate every Postgres construct present in the dataset - these cases are excluded from the accuracy calculation rather than counted against the model, but a more competent sanitizer would shrink this and provide a larger effective test set.
 - **Row order isn't checked.** The `Counter`-based comparison checks *which* rows and *how many* of each, but not their order - so an `ORDER BY` query that returns the right rows in the wrong sequence can still register as a match. This likely means the `ORDER BY / LIMIT` accuracy shown above is somewhat overstated.
-- **Training data is a 3,500-example slice** of a much larger dataset (105K+ examples), chosen to fit within a free Colab T4 session. More data and/or more training steps would likely close more of the remaining `wrong_result` gap, especially on `JOIN`+`GROUP BY` queries.
+- **Training data is a 3,500-example slice** of a larger dataset (105K+ examples), chosen to fit within a free Colab Tesla T4 session. More data and/or more training steps would likely close more of the remaining `wrong_result` gap, especially on `JOIN`+`GROUP BY` queries.
+- this model has no guardrails against off-topic or malicious prompts; a production deployment would need input classification and output-side query allowlisting (e.g., SELECT-only) before executing generated SQL against a real database
 
 ## Setup
 
